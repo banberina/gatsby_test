@@ -40,6 +40,9 @@ const ProductList = styled.div`
   max-width: 1200px;
   margin-top: 10px;
   width: 80%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(1fr, 1fr));
+  gap: 10px;
 `
 
 const ProductContainer = styled.div`

@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { graphql, PageProps } from "gatsby"
+import { GatsbyImage, getImage, IGatsbyImageData } from "gatsby-plugin-image"
 import styled from "styled-components"
 
 interface Product {
@@ -46,11 +47,11 @@ const ProductList = styled.div`
 `
 
 const ProductContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
+  display: grid;
+  grid-template-columns: 300px auto;
   @media (max-width: 600px) {
-    flex-direction: column;
+    grid-template-rows: auto auto;
+    grid-template-columns: 1fr;
   }
 `
 
@@ -67,8 +68,10 @@ const ProductPrice = styled.p`
   font-size: 18px;
 `
 
-const ProductImage = styled.img`
-  max-width: 300px;
+const ProductImage = styled(GatsbyImage)`
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
   @media (max-width: 600px) {
     width: 100%;
     max-width: 100%;
@@ -101,9 +104,13 @@ const IndexPage: React.FC<PageProps<ProductsData>> = ({ data }) => {
       />
       <ProductList>
         {items.map((product: Product) => {
+          const productImage = getImage(product.image)
           return (
             <ProductContainer key={product.name}>
-              <ProductImage src={product.image.publicURL} />
+              <ProductImage
+                image={productImage as IGatsbyImageData}
+                alt={product.name}
+              />
               <div>
                 <ProductTitle>{product.name}</ProductTitle>
                 <ProductPrice>${product.price}</ProductPrice>
@@ -125,7 +132,9 @@ export const query = graphql`
         description
         price
         image {
-          publicURL
+          childImageSharp {
+            gatsbyImageData(layout: FULL_WIDTH)
+          }
         }
       }
     }
